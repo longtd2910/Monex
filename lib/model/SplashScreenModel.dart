@@ -1,5 +1,3 @@
-import 'package:monex/component/SplashScreen.dart';
-
 class SplashScreenModel {
   String _appName;
   String _logoAssets;
