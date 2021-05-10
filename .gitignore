@@ -1,3 +1,7 @@
 .dart_tool/package_config.json
 .dart_tool/package_config_subset
 .packages
+.packages
+.dart_tool/package_config.json
+.dart_tool/version
+.DS_Store
