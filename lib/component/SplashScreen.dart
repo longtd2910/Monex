@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monex/presenter/SplashScreenPresenter.dart';
 import 'package:monex/view/SplashScreenView.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   final SplashScreenPresenter presenter;
@@ -63,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         top: 16,
       ),
       child: Text(
-        appName,
+        AppLocalizations.of(context).appName,
         style: TextStyle(
           color: Color(0xff00AEEF),
           fontFamily: 'Montserrat',

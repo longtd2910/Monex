@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:monex/presenter/SplashScreenPresenter.dart';
-
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'component/SplashScreen.dart';
 
 void main() {
@@ -11,16 +12,19 @@ void main() {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-  runApp(new MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Monex",
-      home: new SplashScreen(new BasicSplashScreenPresenter()),
-    );
-  }
+  runApp(new MaterialApp(
+    debugShowCheckedModeBanner: false,
+    localizationsDelegates: [
+      AppLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+    ],
+    supportedLocales: [
+      const Locale('en', 'EN'),
+      const Locale('vi', 'VN'),
+    ],
+    title: "Monex",
+    home: new SplashScreen(new BasicSplashScreenPresenter()),
+  ));
 }

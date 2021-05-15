@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:monex/model/SplashScreenModel.dart';
 import 'package:monex/view/SplashScreenView.dart';
 import 'package:monex/utils/constant.dart' as Constants;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SplashScreenPresenter {
   void onDelayComplete() async {}
@@ -14,7 +15,7 @@ class BasicSplashScreenPresenter implements SplashScreenPresenter {
   SplashScreenView _view;
 
   BasicSplashScreenPresenter() {
-    this._model = SplashScreenModel(Constants.StringConstants.APP_NAME, Constants.StringConstants.ASSET_LOGO_BLUE);
+    this._model = SplashScreenModel("", Constants.StringConstants.ASSET_LOGO_BLUE);
   }
 
   @override

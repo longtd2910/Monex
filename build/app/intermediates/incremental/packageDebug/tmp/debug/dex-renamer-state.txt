@@ -1,0 +1,4 @@
+#Sun May 16 01:15:43 ICT 2021
+base.0=/Users/longtd2910/Documents/Monex/Monex/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

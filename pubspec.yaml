@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^0.22.0
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -34,6 +37,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -43,6 +47,8 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  generate: true
+
   uses-material-design: true
 
   assets:
