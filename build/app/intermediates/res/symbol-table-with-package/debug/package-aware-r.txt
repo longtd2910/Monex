@@ -1,4 +1,4 @@
-com.example.monex
+com.longtd.monex
 attr alpha
 attr font
 attr fontProviderAuthority

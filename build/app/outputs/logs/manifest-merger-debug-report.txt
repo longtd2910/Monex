@@ -22,7 +22,7 @@ INJECTED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\debug
 INJECTED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 INJECTED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\debug\AndroidManifest.xml:1:1-7:12
 	package
-		ADDED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\main\AndroidManifest.xml:2:5-32
+		ADDED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\main\AndroidManifest.xml:2:5-31
 		INJECTED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\debug\AndroidManifest.xml
 	android:versionName
@@ -49,7 +49,7 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] C:\Users\Lo
 		ADDED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\main\AndroidManifest.xml:11:9-43
 	android:name
 		ADDED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\main\AndroidManifest.xml:9:9-57
-activity#com.example.monex.MainActivity
+activity#com.longtd.monex.MainActivity
 ADDED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\main\AndroidManifest.xml:12:9-40:20
 	android:launchMode
 		ADDED from C:\Users\Long\Documents\GitHub\Flutter\Monex\android\app\src\main\AndroidManifest.xml:14:13-43

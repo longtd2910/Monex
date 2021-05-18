@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "241948269364",
+    "project_id": "monex-305610",
+    "storage_bucket": "monex-305610.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241948269364:android:ab02af81d115f35c11a361",
+        "android_client_info": {
+          "package_name": "com.longtd.monex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241948269364-n2choa763cl55jurqjtpulqf364er3kk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr8EkvkHhxPKgbW6mscLouboztJAhHlq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241948269364-n2choa763cl55jurqjtpulqf364er3kk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
