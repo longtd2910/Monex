@@ -1,9 +1,10 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:monex/presenter/SplashScreenPresenter.dart';
+import 'package:monex/SplashScreen/Splash_Observer.dart';
+import 'package:monex/SplashScreen/Splash_Page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'component/SplashScreen.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -12,7 +13,9 @@ void main() {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-  runApp(new MaterialApp(
+
+  Bloc.observer = SplashObserver();
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     localizationsDelegates: [
       AppLocalizations.delegate,
@@ -25,6 +28,6 @@ void main() {
       const Locale('vi', 'VN'),
     ],
     title: "Monex",
-    home: new SplashScreen(new BasicSplashScreenPresenter()),
+    home: SplashPage(),
   ));
 }

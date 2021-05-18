@@ -1,1 +1,0 @@
- /Users/longtd2910/Documents/Monex/Monex/.dart_tool/flutter_gen/gen_l10n/app_localizations_en.dart /Users/longtd2910/Documents/Monex/Monex/.dart_tool/flutter_gen/gen_l10n/app_localizations.dart:  /Users/longtd2910/Documents/Monex/Monex/l10n.yaml /Users/longtd2910/Documents/Monex/Monex/lib/lang/l10n/app_en.arb
