@@ -23,26 +23,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^0.22.0
   flutter_localizations:
     sdk: flutter
-  intl: ^0.17.0
   bloc: ^7.0.0
-  flutter_bloc: ^7.0.0
-  firebase_core: "^1.2.0"
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
+  encrypt: ^5.0.0
+  firebase_auth: ^1.2.0
+  firebase_core: ^1.2.0
+  firebase_database: ^6.1.2
+  flutter_bloc: ^7.0.0
+  flutter_svg: ^0.22.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_application_id: "^1.0.0"
-  
-  
+
 flutter_application_id:
-  android: 
+  android:
     id: "com.longtd.Monex"
     name: "Monex"
   ios:
@@ -50,7 +48,6 @@ flutter_application_id:
     name: "Monex"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter.
 flutter:
 
@@ -63,7 +60,9 @@ flutter:
 
   assets:
     - assets/drawable/Main/
-
+    - assets/drawable/Animation/
+    - assets/drawable/ThirdParty/
+    - assets/drawable/Art/
 
   fonts:
     - family: Lekton

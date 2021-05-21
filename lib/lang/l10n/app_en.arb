@@ -1,5 +1,13 @@
 {
     "appName": "Monex",
     "appDescription" : "The only thing you need to keep your money on track",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "emailHolder":"Email",
+    "passwordHolder": "Password",
+    "rePassewordHolder" : "Re-enter password",
+    "agree": "I agree to",
+    "termAndLicenses" : "Terms of Service and Privacy Policy",
+    "signUp" : "Sign Up",
+    "or" : "OR",
+    "alreadyHaveAccount" : "Already have an account? Sign in now!"
 }

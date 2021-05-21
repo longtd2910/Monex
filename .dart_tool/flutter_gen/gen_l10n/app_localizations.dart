@@ -1,7 +1,6 @@
 
 import 'dart:async';
 
-// ignore: unused_import
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -63,7 +62,6 @@ import 'app_localizations_en.dart';
 abstract class AppLocalizations {
   AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
-  // ignore: unused_field
   final String localeName;
 
   static AppLocalizations? of(BuildContext context) {
@@ -111,6 +109,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign In'**
   String get signIn;
+
+  /// No description provided for @emailHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailHolder;
+
+  /// No description provided for @passwordHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get passwordHolder;
+
+  /// No description provided for @rePassewordHolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Re-enter password'**
+  String get rePassewordHolder;
+
+  /// No description provided for @agree.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to'**
+  String get agree;
+
+  /// No description provided for @termAndLicenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service and Privacy Policy'**
+  String get termAndLicenses;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Up'**
+  String get signUp;
+
+  /// No description provided for @or.
+  ///
+  /// In en, this message translates to:
+  /// **'OR'**
+  String get or;
+
+  /// No description provided for @alreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Sign in now!'**
+  String get alreadyHaveAccount;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:monex/SplashScreen/Splash_Observer.dart';
 import 'package:monex/SplashScreen/Splash_Page.dart';
+import 'SignUpScreen/SignUp_page.dart';
+import 'SplashScreen/Splash_Observer.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -15,19 +16,25 @@ void main() {
   );
 
   Bloc.observer = SplashObserver();
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    localizationsDelegates: [
-      AppLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-    ],
-    supportedLocales: [
-      const Locale('en', 'EN'),
-      const Locale('vi', 'VN'),
-    ],
-    title: "Monex",
-    home: SplashPage(),
-  ));
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', 'EN'),
+        const Locale('vi', 'VN'),
+      ],
+      initialRoute: '/',
+      routes: {
+        '/': (context) => SplashPage(),
+        '/signup': (context) => SignUpPage(),
+      },
+      title: "Monex",
+    ),
+  );
 }

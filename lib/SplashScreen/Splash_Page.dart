@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monex/SplashScreen/Splash_Cubit.dart';
-import 'package:monex/SplashScreen/Splash_View.dart';
+
+import 'Splash_Cubit.dart';
+import 'Splash_View.dart';
 
 class SplashPage extends StatelessWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class SplashPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => SplashCubit(),
-      child: SplashView(),
+      child: SplashView(MediaQuery.of(context).size.height, MediaQuery.of(context).size.width),
     );
   }
 }

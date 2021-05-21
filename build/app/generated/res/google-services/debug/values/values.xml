@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">241948269364-n2choa763cl55jurqjtpulqf364er3kk.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">241948269364</string>
+    <string name="google_api_key" translatable="false">AIzaSyCr8EkvkHhxPKgbW6mscLouboztJAhHlq8</string>
+    <string name="google_app_id" translatable="false">1:241948269364:android:ab02af81d115f35c11a361</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCr8EkvkHhxPKgbW6mscLouboztJAhHlq8</string>
+    <string name="google_storage_bucket" translatable="false">monex-305610.appspot.com</string>
+    <string name="project_id" translatable="false">monex-305610</string>
+</resources>
