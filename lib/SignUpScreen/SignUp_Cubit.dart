@@ -37,7 +37,7 @@ class ServerSideSignUpException implements Exception {
 class SignUpCubit extends Cubit<SignUpModel> {
   SignUpCubit(SignUpModel initialState) : super(initialState);
 
-  bool signUpInProgress(String email, String password, String rePassword) {
+  Future<bool> signUpInProgress(String email, String password, String rePassword) async {
     state.email = email;
     state.password = password;
     state.rePassword = rePassword;
@@ -66,8 +66,25 @@ class SignUpCubit extends Cubit<SignUpModel> {
       throw ClientSideSignUpException("Terms of Service & Privacy Policies must be accepted", 6);
     }
 
-    // DatabaseReference monexDbRef = FirebaseDatabase.instance.reference().child("users");
-    // monexDbRef..child("email").set(state.email)..child("password").set(state.password);
+    DatabaseReference monexDbRef = FirebaseDatabase.instance.reference();
+    DataSnapshot userIdList = await monexDbRef.child("users").once();
+    Map<dynamic, dynamic> values = userIdList.value;
+    bool hasDuplicate = false;
+    for (String key in values.keys) {
+      DataSnapshot emailList = await monexDbRef.child("users").child(key).child("email").once();
+      if (emailList.value == state.email) {
+        hasDuplicate = true;
+      }
+    }
+    if (hasDuplicate) {
+      throw ServerSideSignUpException("This email is already registered", 1);
+    }
+
+    monexDbRef.child("users").child(monexDbRef.push().key).update({
+      "email": state.email,
+      "password": state.password,
+      "isSetUp": true,
+    });
     return true;
   }
 
