@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +18,7 @@ void main() {
   );
 
   Bloc.observer = SplashObserver();
+  final page = SplashPage();
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -29,9 +32,9 @@ void main() {
         const Locale('en', 'EN'),
         const Locale('vi', 'VN'),
       ],
-      initialRoute: '/',
+      initialRoute: '/splash',
       routes: {
-        '/': (context) => SplashPage(),
+        '/splash': (context) => page,
         '/signup': (context) => SignUpPage(),
       },
       title: "Monex",

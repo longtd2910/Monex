@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monex/SignUpScreen/SignUp_page.dart';
+import 'package:monex/SignUpScreen/test.dart';
 
 import 'Splash_Cubit.dart';
 
@@ -91,10 +93,10 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
                           Future.delayed(
                             Duration(milliseconds: 700),
                             () {
-                              Navigator.pushNamed(context, '/signup');
+                              final page = SignUpPage();
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => page));
                             },
                           );
-                          //move to next screen
                         }
                         if (snapshot.hasError) {
                           log('Firebase initialization failed ' + snapshot.error.toString());

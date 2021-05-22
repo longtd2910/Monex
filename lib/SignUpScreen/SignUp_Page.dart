@@ -10,7 +10,7 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SignUpCubit(new SignUpModel("", "", "", false)),
+      create: (_) => SignUpCubit(new SignUpModel()),
       child: SignUpView(
         MediaQuery.of(context).size.height,
         MediaQuery.of(context).size.width,

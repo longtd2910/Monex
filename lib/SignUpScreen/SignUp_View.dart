@@ -20,7 +20,10 @@ class _SignUpViewState extends State<SignUpView> {
   final double screenHeight;
   final double screenWidth;
 
-  var inputStyle = TextStyle(
+  final emailInputController = TextEditingController();
+  final passwordInputController = TextEditingController();
+  final rePasswordInputController = TextEditingController();
+  final inputStyle = TextStyle(
     fontFamily: 'Montserrat',
     fontSize: 16,
     color: Colors.black.withOpacity(0.5),
@@ -28,14 +31,17 @@ class _SignUpViewState extends State<SignUpView> {
 
   var inputContainerMargin;
   var inputContainerDecor;
+
+  var _passwordEyeVisibility;
+
+  var _rePasswordVisibility;
   _SignUpViewState(this.screenHeight, this.screenWidth);
 
   @override
-  Widget build(BuildContext context) {
-    var emailInputController = new TextEditingController();
-    var passwordInputController = new TextEditingController();
-    var rePasswordInputController = new TextEditingController();
-
+  void initState() {
+    super.initState();
+    _passwordEyeVisibility = false;
+    _rePasswordVisibility = false;
     inputContainerMargin = EdgeInsets.only(top: 40);
     inputContainerDecor = BoxDecoration(
       color: Colors.white,
@@ -48,230 +54,323 @@ class _SignUpViewState extends State<SignUpView> {
         )
       ],
     );
+    passwordInputController.addListener(() {
+      if (passwordInputController.text.length > 0) {
+        setState(() {
+          _passwordEyeVisibility = true;
+        });
+        return;
+      }
+      if (passwordInputController.text.length == 0) {
+        setState(() {
+          _passwordEyeVisibility = false;
+        });
+      }
+    });
+    rePasswordInputController.addListener(() {
+      if (rePasswordInputController.text.length > 0) {
+        setState(() {
+          _rePasswordVisibility = true;
+        });
+      }
+      if (rePasswordInputController.text.length == 0) {
+        setState(() {
+          _passwordEyeVisibility = false;
+        });
+      }
+    });
+  }
+
+  void formSubmitted() {
+    try {
+      context.read<SignUpCubit>().signUpInProgress(emailInputController.text, passwordInputController.text, rePasswordInputController.text);
+    } on ClientSideSignUpException catch (e) {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: Center(
+            child: Text(e.cause),
+          ),
+          content: TextButton(
+            child: Text("OK"),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: SafeArea(child: BlocBuilder<SignUpCubit, SignUpModel>(
-        builder: (context, state) {
-          return Container(
-            color: Colors.white,
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                    top: 40,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SafeArea(child: BlocBuilder<SignUpCubit, SignUpModel>(
+          builder: (context, state) {
+            return Container(
+              color: Colors.white,
+              child: Column(
+                children: [
+                  // * App Logo
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 40,
+                    ),
+                    height: screenHeight * 16 / 100,
+                    child: SvgPicture.asset(
+                      'assets/drawable/Main/AppLogo-Blue.svg',
+                      height: (screenHeight * 15 / 100),
+                    ),
                   ),
-                  height: screenHeight * 16 / 100,
-                  child: SvgPicture.asset(
-                    'assets/drawable/Main/AppLogo-Blue.svg',
-                    height: (screenHeight * 15 / 100),
+                  // * Email Input
+                  Container(
+                    decoration: inputContainerDecor,
+                    margin: inputContainerMargin,
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(
+                      right: 16,
+                      left: 16,
+                    ),
+                    height: screenHeight * 5 / 100,
+                    width: screenWidth * 75 / 100,
+                    child: Center(
+                      child: TextField(
+                        controller: emailInputController,
+                        decoration: InputDecoration.collapsed(
+                          hintText: AppLocalizations.of(context)!.emailHolder,
+                        ),
+                        style: inputStyle,
+                      ),
+                    ),
                   ),
-                ),
-                Container(
-                  decoration: inputContainerDecor,
-                  margin: inputContainerMargin,
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(
-                    right: 16,
-                    left: 16,
-                  ),
-                  height: screenHeight * 5 / 100,
-                  width: screenWidth * 75 / 100,
-                  child: Center(
+                  // * Password Input
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(
+                      right: 16,
+                      left: 16,
+                    ),
+                    height: screenHeight * 5 / 100,
+                    decoration: inputContainerDecor,
+                    margin: inputContainerMargin,
+                    width: screenWidth * 75 / 100,
                     child: TextField(
-                      controller: emailInputController,
-                      decoration: InputDecoration.collapsed(
-                        hintText: AppLocalizations.of(context)!.emailHolder,
+                      controller: passwordInputController,
+                      obscureText: !state.passwordEyeOpen!,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: AppLocalizations.of(context)!.passwordHolder,
+                        suffixIcon: Visibility(
+                          visible: _passwordEyeVisibility,
+                          child: IconButton(
+                            icon: Icon(
+                              (state.passwordEyeOpen!) ? Icons.visibility : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                context.read<SignUpCubit>().passwordEyeChanged();
+                              });
+                            },
+                          ),
+                        ),
                       ),
                       style: inputStyle,
                     ),
                   ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(
-                    right: 16,
-                    left: 16,
-                  ),
-                  height: screenHeight * 5 / 100,
-                  decoration: inputContainerDecor,
-                  margin: inputContainerMargin,
-                  width: screenWidth * 75 / 100,
-                  child: TextField(
-                    controller: passwordInputController,
-                    decoration: InputDecoration.collapsed(
-                      hintText: AppLocalizations.of(context)!.passwordHolder,
+                  // * Re-enter password Input
+                  Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(
+                      right: 16,
+                      left: 16,
                     ),
-                    style: inputStyle,
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(
-                    right: 16,
-                    left: 16,
-                  ),
-                  height: screenHeight * 5 / 100,
-                  decoration: inputContainerDecor,
-                  margin: inputContainerMargin,
-                  width: screenWidth * 75 / 100,
-                  child: TextField(
-                    controller: rePasswordInputController,
-                    decoration: InputDecoration.collapsed(
-                      hintText: AppLocalizations.of(context)!.rePassewordHolder,
-                    ),
-                    style: inputStyle,
-                  ),
-                ),
-                Container(
-                  height: screenHeight * 10 / 100,
-                  width: screenWidth * 80 / 100,
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        value: state.acceptRadio,
-                        onChanged: (value) {
-                          context.read<SignUpCubit>().radioButtonChanged();
-                          setState(() {});
-                        },
-                      ),
-                      Text(
-                        (AppLocalizations.of(context)!.agree + " "),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: "Montserrat",
-                          color: Colors.black,
+                    height: screenHeight * 5 / 100,
+                    decoration: inputContainerDecor,
+                    margin: inputContainerMargin,
+                    width: screenWidth * 75 / 100,
+                    child: TextField(
+                      controller: rePasswordInputController,
+                      obscureText: !state.rePasswordEyeOpen!,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: AppLocalizations.of(context)!.rePassewordHolder,
+                        suffixIcon: Visibility(
+                          visible: _rePasswordVisibility,
+                          child: IconButton(
+                            icon: Icon(
+                              (state.passwordEyeOpen!) ? Icons.visibility : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                context.read<SignUpCubit>().rePasswordEyeChanged();
+                              });
+                            },
+                          ),
                         ),
                       ),
-                      InkWell(
-                        onTap: () {
-                          print("term and licences");
-                        },
-                        child: Text(
-                          AppLocalizations.of(context)!.termAndLicenses,
+                      style: inputStyle,
+                    ),
+                  ),
+                  // * Terms of Services Box
+                  Container(
+                    height: screenHeight * 10 / 100,
+                    width: screenWidth * 80 / 100,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          value: state.acceptRadio,
+                          onChanged: (value) {
+                            context.read<SignUpCubit>().radioButtonChanged();
+                            setState(() {});
+                          },
+                        ),
+                        Text(
+                          (AppLocalizations.of(context)!.agree + " "),
                           style: TextStyle(
                             fontSize: 12,
                             fontFamily: "Montserrat",
-                            fontWeight: FontWeight.w500,
-                            decoration: TextDecoration.underline,
+                            color: Colors.black,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  height: screenHeight * 5 / 100,
-                  width: screenWidth * 40 / 100,
-                  child: ElevatedButton(
-                    child: Text(
-                      AppLocalizations.of(context)!.signUp,
-                    ),
-                    onPressed: context.read<SignUpCubit>().signUpInProgress,
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      )),
-                      backgroundColor: MaterialStateProperty.all(
-                        Color(0xff00AEEF),
-                      ),
-                      textStyle: MaterialStateProperty.all(
-                        TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Montserrat',
-                          fontSize: 24,
+                        InkWell(
+                          onTap: () {
+                            print("term and licences");
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.termAndLicenses,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Container(
-                    child: Center(
+
+                  // * Submit Button
+                  Container(
+                    height: screenHeight * 5 / 100,
+                    width: screenWidth * 40 / 100,
+                    child: ElevatedButton(
                       child: Text(
-                        AppLocalizations.of(context)!.or.toUpperCase(),
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.5),
-                          fontSize: 24,
+                        AppLocalizations.of(context)!.signUp,
+                      ),
+                      onPressed: formSubmitted,
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        )),
+                        backgroundColor: MaterialStateProperty.all(
+                          Color(0xff00AEEF),
+                        ),
+                        textStyle: MaterialStateProperty.all(
+                          TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Montserrat',
+                            fontSize: 24,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Container(
-                  height: screenHeight * 10 / 100,
-                  margin: EdgeInsets.only(bottom: 40),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        iconSize: 50,
-                        icon: Container(
-                          padding: EdgeInsets.all(10),
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(
-                              width: 0.5,
-                              color: Colors.black.withOpacity(0.2),
-                            ),
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/drawable/ThirdParty/google.svg',
-                            height: 27,
-                            alignment: Alignment.center,
+                  // * "OR" Field
+                  Expanded(
+                    child: Container(
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.or.toUpperCase(),
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
+                            fontSize: 24,
                           ),
                         ),
-                        onPressed: () {
-                          print("Google pressed");
-                        },
                       ),
-                      IconButton(
-                        iconSize: 50,
-                        icon: Container(
-                          padding: EdgeInsets.all(10),
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(
-                              width: 0.5,
-                              color: Colors.black.withOpacity(0.2),
-                            ),
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/drawable/ThirdParty/facebook.svg',
-                            height: 27,
-                            alignment: Alignment.center,
-                          ),
-                        ),
-                        onPressed: () {
-                          print("Facebook pressed");
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                    bottom: 16,
-                  ),
-                  child: InkWell(
-                    child: Text(
-                      AppLocalizations.of(context)!.alreadyHaveAccount,
-                      style: TextStyle(fontFamily: 'Montserrat', fontSize: 14, decoration: TextDecoration.underline),
                     ),
-                    onTap: () {
-                      print("Login Redirect");
-                    },
                   ),
-                )
-              ],
-            ),
-          );
-        },
-      )),
+                  // * "Third-Party Sign Up Options"
+                  Container(
+                    height: screenHeight * 10 / 100,
+                    margin: EdgeInsets.only(bottom: 40),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          iconSize: 50,
+                          icon: Container(
+                            padding: EdgeInsets.all(10),
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(
+                                width: 0.5,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/drawable/ThirdParty/google.svg',
+                              height: 27,
+                              alignment: Alignment.center,
+                            ),
+                          ),
+                          onPressed: () {
+                            print("Google pressed");
+                          },
+                        ),
+                        IconButton(
+                          iconSize: 50,
+                          icon: Container(
+                            padding: EdgeInsets.all(10),
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(
+                                width: 0.5,
+                                color: Colors.black.withOpacity(0.2),
+                              ),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/drawable/ThirdParty/facebook.svg',
+                              height: 27,
+                              alignment: Alignment.center,
+                            ),
+                          ),
+                          onPressed: () {
+                            print("Facebook pressed");
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  // * Sign in Hypertext
+                  Container(
+                    margin: EdgeInsets.only(
+                      bottom: 16,
+                    ),
+                    child: InkWell(
+                      child: Text(
+                        AppLocalizations.of(context)!.alreadyHaveAccount,
+                        style: TextStyle(fontFamily: 'Montserrat', fontSize: 14, decoration: TextDecoration.underline),
+                      ),
+                      onTap: () {
+                        print("Login Redirect");
+                      },
+                    ),
+                  )
+                ],
+              ),
+            );
+          },
+        )),
+      ),
     );
   }
 }
