@@ -1,0 +1,4 @@
+#Sun May 23 23:52:34 ICT 2021
+base.0=C\:\\Users\\Long\\Documents\\GitHub\\Flutter\\Monex\\build\\app\\intermediates\\transforms\\r8\\release\\0\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

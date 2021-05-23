@@ -25,8 +25,6 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   final double screenHeight;
   final double screenWidth;
 
-  var _viewOpacity = 1.0;
-
   _SplashViewState(this.screenHeight, this.screenWidth);
 
   appLogoDisplay() => Container(
@@ -67,21 +65,11 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
         //Start "monex" display animation
         //take 800ms to fully show "monex"
         context.read<SplashCubit>().appear();
-
         //Stay at splash screen for 1000ms
-        await Future.delayed(
-          Duration(milliseconds: 400),
-          () {
-            setState(() {
-              //Take 800ms for Splash to fade out
-              _viewOpacity = 0.0;
-            });
-            Future.delayed(Duration(milliseconds: 200), () {
-              final page = SignUpPage();
-              Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: page, duration: Duration(milliseconds: 800)));
-            });
-          },
-        );
+        Future.delayed(Duration(milliseconds: 200), () {
+          final page = SignUpPage();
+          Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: page, duration: Duration(milliseconds: 800)));
+        });
       },
     );
   }
@@ -91,23 +79,18 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     //Add 1-time delay
-
     return Scaffold(
       body: SafeArea(
         child: Container(
           alignment: Alignment.center,
-          child: AnimatedOpacity(
-            opacity: _viewOpacity,
-            duration: Duration(milliseconds: 200),
+          child: Center(
             child: Center(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    appLogoDisplay(),
-                    appNameDisplay(),
-                  ],
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  appLogoDisplay(),
+                  appNameDisplay(),
+                ],
               ),
             ),
           ),
