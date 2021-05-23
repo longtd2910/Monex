@@ -1,1 +1,0 @@
- C:\\Users\\Long\\Documents\\GitHub\\Flutter\\Monex\\.dart_tool\\flutter_gen\\gen_l10n\\app_localizations_en.dart C:\\Users\\Long\\Documents\\GitHub\\Flutter\\Monex\\.dart_tool\\flutter_gen\\gen_l10n\\app_localizations.dart:  C:\\Users\\Long\\Documents\\GitHub\\Flutter\\Monex\\l10n.yaml C:\\Users\\Long\\Documents\\GitHub\\Flutter\\Monex\\lib/lang/l10n\\app_en.arb

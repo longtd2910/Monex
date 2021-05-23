@@ -79,7 +79,11 @@ class SignUpCubit extends Cubit<SignUpModel> {
     if (hasDuplicate) {
       throw ServerSideSignUpException("This email is already registered", 1);
     }
-
+    monexDbRef.child("users").push().set({
+      "email": "DF",
+      "password": "DF",
+      "isSetUp": false,
+    });
     monexDbRef.child("users").child(monexDbRef.push().key).update({
       "email": state.email,
       "password": state.password,

@@ -28,3 +28,4 @@ pubspec.lock
 
 # Local History for Visual Studio Code
 .history/
+.dart_tool/
