@@ -1,6 +1,6 @@
 import 'package:encrypt/encrypt.dart';
 
-class Crypto {
+class Crypter {
   static final key = Key.fromLength(32);
   static final iv = IV.fromLength(16);
 

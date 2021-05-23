@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monex/utils/function.dart';
 
 class SignUpModel {
   String? email;
@@ -79,14 +80,9 @@ class SignUpCubit extends Cubit<SignUpModel> {
     if (hasDuplicate) {
       throw ServerSideSignUpException("This email is already registered", 1);
     }
-    monexDbRef.child("users").push().set({
-      "email": "DF",
-      "password": "DF",
-      "isSetUp": false,
-    });
     monexDbRef.child("users").child(monexDbRef.push().key).update({
       "email": state.email,
-      "password": state.password,
+      "password": Crypter.encrypt(state.password!),
       "isSetUp": true,
     });
     return true;
