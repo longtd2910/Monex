@@ -1,7 +1,30 @@
-.dart_tool/package_config.json
-.dart_tool/package_config_subset
+
+# Files and directories created by pub
 .packages
-.packages
-.dart_tool/package_config.json
-.dart_tool/version
+.pub/
+build/
+# If you're building an application, you may want to check-in your pubspec.lock
+pubspec.lock
+
+# Directory created by dartdoc
+# If you don't generate documentation locally you can remove this line.
+doc/api/
 .DS_Store
+.atom/
+.idea
+.packages
+.pub/
+build/
+ios/.generated/
+packages
+pubspec.lock
+.flutter-plugins
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/
