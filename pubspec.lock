@@ -22,6 +22,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.1"
+<<<<<<< Updated upstream
   bloc:
     dependency: "direct main"
     description:
@@ -29,6 +30,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.0"
+=======
+>>>>>>> Stashed changes
   boolean_selector:
     dependency: transitive
     description:
