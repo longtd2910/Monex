@@ -1,9 +1,12 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monex/Components/ErrorCode.dart';
+import 'package:monex/Components/User.dart' as LocalComponent;
 
 import 'SignUp_Cubit.dart';
 
@@ -84,33 +87,46 @@ class _SignUpViewState extends State<SignUpView> {
     });
   }
 
-  void formSubmitted() {
-    context.read<SignUpCubit>().signUpInProgress(emailInputController.text, passwordInputController.text, rePasswordInputController.text).catchError((error) {
-      String message = "";
-      if (error is ServerSideSignUpException) {
-        message = error.cause;
-      }
-      if (error is ClientSideSignUpException) {
-        message = error.cause;
-      }
-      if (message == "") {
-        message = "We can not communicate to our server at the moment.\nThis might be due to an internal server error";
-      }
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: Center(
-            child: Text(
-              message,
-            ),
-          ),
-          content: TextButton(
-            child: Text("OK"),
-            onPressed: () => Navigator.pop(context),
+  void displayErrorMessage(dynamic error) {
+    String message = "";
+    if (error is ClientSideSignUpException) {
+      message = ClientSignUpErrorCode(error.error).errorMessage(context);
+    }
+    if (error is ServerSideSignUpException) {
+      message = ServerSignUpErrorCode(error.error).errorMessage(context);
+    }
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Center(
+          child: Text(
+            message,
           ),
         ),
-      );
+        content: TextButton(
+          child: Text("OK"),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+    );
+  }
+
+  void navigateToCreateUser(LocalComponent.User user) {}
+
+  void formSubmitted() async {
+    UserCredential? user = await context
+        .read<SignUpCubit>()
+        .startEmailSignUp(emailInputController.text, passwordInputController.text, rePasswordInputController.text)
+        .catchError((error) {
+      displayErrorMessage(error);
     });
+  }
+
+  void facebookLogin() async {
+    UserCredential? user = await context.read<SignUpCubit>().startFacebookLogin().catchError((error) {
+      displayErrorMessage(error);
+    });
+    navigateToCreateUser(LocalComponent.User(user!.user!.uid, [LocalComponent.SignInType.Facebook]));
   }
 
   @override
@@ -334,8 +350,11 @@ class _SignUpViewState extends State<SignUpView> {
                                 alignment: Alignment.center,
                               ),
                             ),
-                            onPressed: () {
-                              print("Google pressed");
+                            onPressed: () async {
+                              UserCredential? userMain = await context.read<SignUpCubit>().startGoogleLogin();
+                              if (userMain != null) {
+                                // TODO navigate to main screen
+                              }
                             },
                           ),
                           IconButton(
@@ -358,7 +377,7 @@ class _SignUpViewState extends State<SignUpView> {
                               ),
                             ),
                             onPressed: () {
-                              print("Facebook pressed");
+                              facebookLogin();
                             },
                           ),
                         ],

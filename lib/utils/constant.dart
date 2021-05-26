@@ -7,3 +7,7 @@ class StringConstants {
 class NumConstants {
   static const int MAX_WELCOME_SCREEN_NUMBER = 3;
 }
+
+enum ErrorCode {
+  UserAbortedSignIn,
+}

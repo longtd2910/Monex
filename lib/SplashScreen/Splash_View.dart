@@ -1,14 +1,10 @@
-import 'dart:developer';
-
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:monex/SignUpScreen/SignUp_page.dart';
-import 'package:monex/SignUpScreen/test.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../SignUpScreen/SignUp_page.dart';
 import 'Splash_Cubit.dart';
 
 class SplashView extends StatefulWidget {
@@ -97,11 +93,5 @@ class _SplashViewState extends State<SplashView> with SingleTickerProviderStateM
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
   }
 }

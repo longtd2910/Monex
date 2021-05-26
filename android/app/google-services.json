@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "241948269364-8s48h2nsalts3s9764knhfpv8of3hqg2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.longtd.monex",
+            "certificate_hash": "1a888771610b00f77f6215fac8a444c27083a77f"
+          }
+        },
+        {
           "client_id": "241948269364-n2choa763cl55jurqjtpulqf364er3kk.apps.googleusercontent.com",
           "client_type": 3
         }

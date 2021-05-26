@@ -1,6 +1,7 @@
 {
     "appName": "Monex",
     "appDescription" : "The only thing you need to keep your money on track",
+
     "signIn": "Sign In",
     "emailHolder":"Email",
     "passwordHolder": "Password",
@@ -9,5 +10,16 @@
     "termAndLicenses" : "Terms of Service and Privacy Policy",
     "signUp" : "Sign Up",
     "or" : "OR",
-    "alreadyHaveAccount" : "Already have an account? Sign in now!"
+    "alreadyHaveAccount" : "Already have an account? Sign in now!",
+    
+    "emailInvalid" : "Invalid Email Format",
+    "passwordTooWeak" : "Password must be at least 6 characters long",
+    "passwordTooLong" : "Password can only be up to 16 characters",
+    "passwordTrim" : "Password can not start or end with space",
+    "rePasswordWrong" : "The passwords you entered do not match",
+    "termsOfServicesUncheck" : "You must accept our Terms of Services and Privacy Polices to continue",
+    "emailRegistered" : "This email has already belong to an account",
+    "unknownError" : "Unexpected error happened on the way",
+    "internetException" : "We can not connect to our server, check your internet connection and try again",
+    "serverMaintenance" : "Our server is going undercover for upgrade, please use Offline Mode or wait a moment"
 }

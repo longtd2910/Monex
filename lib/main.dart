@@ -4,12 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:monex/SplashScreen/Splash_Page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:page_transition/page_transition.dart';
+
 import 'SignUpScreen/SignUp_page.dart';
 import 'SplashScreen/Splash_Observer.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -21,7 +21,7 @@ void main() {
 
   Bloc.observer = SplashObserver();
   WidgetsFlutterBinding.ensureInitialized();
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  Firebase.initializeApp();
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,

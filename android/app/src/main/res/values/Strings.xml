@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Monex</string>
+
+    <string name="facebook_app_id">298128041915083</string>
+
+    <string name="fb_login_protocol_scheme">fb298128041915083</string>
+</resources>

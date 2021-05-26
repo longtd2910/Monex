@@ -1,9 +1,16 @@
 import 'dart:core';
 
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monex/utils/function.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:monex/Components/ErrorCode.dart';
+
+import '../utils/function.dart';
+
+//TODO: Implement enum library for error code
 
 class SignUpModel {
   String? email;
@@ -24,69 +31,17 @@ class SignUpModel {
 }
 
 class ClientSideSignUpException implements Exception {
-  String cause;
-  int causeCode;
-  ClientSideSignUpException(this.cause, this.causeCode);
+  ClientSignUpError error;
+  ClientSideSignUpException(this.error);
 }
 
 class ServerSideSignUpException implements Exception {
-  String cause;
-  int causeCode;
-  ServerSideSignUpException(this.cause, this.causeCode);
+  ServerSignUpError error;
+  ServerSideSignUpException(this.error);
 }
 
 class SignUpCubit extends Cubit<SignUpModel> {
   SignUpCubit(SignUpModel initialState) : super(initialState);
-
-  Future<bool> signUpInProgress(String email, String password, String rePassword) async {
-    state.email = email;
-    state.password = password;
-    state.rePassword = rePassword;
-
-    if (!EmailValidator.validate(state.email!)) {
-      throw ClientSideSignUpException("Invalid email", 1);
-    }
-
-    if (state.password!.length < 6) {
-      throw ClientSideSignUpException("Password too short", 2);
-    }
-
-    if (state.password!.length > 16) {
-      throw ClientSideSignUpException("Password too long", 3);
-    }
-
-    if (state.password!.trim().length != state.password!.length) {
-      throw ClientSideSignUpException("Password cannot start or end with a space", 4);
-    }
-
-    if (state.password!.compareTo(state.rePassword!) != 0) {
-      throw ClientSideSignUpException("The passwords you entered is not the same", 5);
-    }
-
-    if (!state.acceptRadio!) {
-      throw ClientSideSignUpException("Terms of Service & Privacy Policies must be accepted", 6);
-    }
-
-    DatabaseReference monexDbRef = FirebaseDatabase.instance.reference();
-    DataSnapshot userIdList = await monexDbRef.child("users").once();
-    Map<dynamic, dynamic> values = userIdList.value;
-    bool hasDuplicate = false;
-    for (String key in values.keys) {
-      DataSnapshot emailList = await monexDbRef.child("users").child(key).child("email").once();
-      if (emailList.value == state.email) {
-        hasDuplicate = true;
-      }
-    }
-    if (hasDuplicate) {
-      throw ServerSideSignUpException("This email is already registered", 1);
-    }
-    monexDbRef.child("users").child(monexDbRef.push().key).update({
-      "email": state.email,
-      "password": Crypter.encrypt(state.password!),
-      "isSetUp": true,
-    });
-    return true;
-  }
 
   void inputValueChanged(String value, int object) {
     if (object == 1) {
@@ -115,5 +70,83 @@ class SignUpCubit extends Cubit<SignUpModel> {
   void rePasswordEyeChanged() {
     state.rePasswordEyeOpen = !state.rePasswordEyeOpen!;
     emit(state);
+  }
+
+  Future<UserCredential?> startFacebookLogin() async {
+    final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
+    if (accessToken != null) {
+      return await FirebaseAuth.instance.signInWithCredential(FacebookAuthProvider.credential(accessToken.token));
+    }
+    try {
+      final LoginResult result = await FacebookAuth.instance.login();
+      if (result.status == LoginStatus.success) {
+        // you are logged
+        final AccessToken accessToken = result.accessToken!;
+        return await FirebaseAuth.instance.signInWithCredential(FacebookAuthProvider.credential(accessToken.token));
+      }
+      if (result.status == LoginStatus.cancelled) {
+        return null;
+      }
+    } on Exception {
+      throw ServerSideSignUpException(ServerSignUpError.UnknownError);
+    }
+  }
+
+  Future<UserCredential?> startGoogleLogin() async {
+    try {
+      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } on Exception {
+      throw ServerSideSignUpException(ServerSignUpError.UnknownError);
+    }
+  }
+
+  Future<UserCredential> startEmailSignUp(String email, String password, String rePassword) async {
+    state.email = email;
+    state.password = password;
+    state.rePassword = rePassword;
+
+    if (!EmailValidator.validate(state.email!)) {
+      throw ClientSideSignUpException(ClientSignUpError.EmailInvalid);
+    }
+
+    if (state.password!.length < 6) {
+      throw ClientSideSignUpException(ClientSignUpError.PasswordTooWeak);
+    }
+
+    if (state.password!.length > 16) {
+      throw ClientSideSignUpException(ClientSignUpError.PasswordTooLong);
+    }
+
+    if (state.password!.trim().length != state.password!.length) {
+      throw ClientSideSignUpException(ClientSignUpError.PasswordTrim);
+    }
+
+    if (state.password!.compareTo(state.rePassword!) != 0) {
+      throw ClientSideSignUpException(ClientSignUpError.RePasswordWrong);
+    }
+
+    if (!state.acceptRadio!) {
+      throw ClientSideSignUpException(ClientSignUpError.TermsOfServicesUnCheck);
+    }
+    try {
+      final UserCredential emailUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: state.email!,
+        password: state.password!,
+      );
+      return emailUser;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        throw ServerSideSignUpException(ServerSignUpError.EmailRegistered);
+      } else
+        throw ServerSideSignUpException(ServerSignUpError.UnknownError);
+    } catch (e) {
+      throw ServerSideSignUpException(ServerSignUpError.UnknownError);
+    }
   }
 }
