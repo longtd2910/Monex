@@ -9,8 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:monex/Components/ErrorCode.dart';
 
 import '../utils/function.dart';
-
-//TODO: Implement enum library for error code
+import 'package:monex/Components/User.dart' as LocalComponent;
 
 class SignUpModel {
   String? email;
@@ -72,17 +71,19 @@ class SignUpCubit extends Cubit<SignUpModel> {
     emit(state);
   }
 
-  Future<UserCredential?> startFacebookLogin() async {
+  Future<List?> startFacebookLogin() async {
     final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
     if (accessToken != null) {
-      return await FirebaseAuth.instance.signInWithCredential(FacebookAuthProvider.credential(accessToken.token));
+      var user = await FirebaseAuth.instance.signInWithCredential(FacebookAuthProvider.credential(accessToken.token));
+      return [user, await FacebookAuth.instance.getUserData()];
     }
     try {
       final LoginResult result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {
         // you are logged
         final AccessToken accessToken = result.accessToken!;
-        return await FirebaseAuth.instance.signInWithCredential(FacebookAuthProvider.credential(accessToken.token));
+        var user = await FirebaseAuth.instance.signInWithCredential(FacebookAuthProvider.credential(accessToken.token));
+        return [user, await FacebookAuth.instance.getUserData()];
       }
       if (result.status == LoginStatus.cancelled) {
         return null;
@@ -148,5 +149,38 @@ class SignUpCubit extends Cubit<SignUpModel> {
     } catch (e) {
       throw ServerSideSignUpException(ServerSignUpError.UnknownError);
     }
+  }
+
+  Future<ActionStatus> addUserToDatabase(LocalComponent.User user) async {
+    //TODO: migrate this part to login
+    //   DatabaseReference monexDbRef = FirebaseDatabase.instance.reference();
+    //   DataSnapshot userIdList = await monexDbRef.child("users").once();
+    //   Map<dynamic, dynamic> values = userIdList.value;
+    //   Map<dynamic, dynamic>? userInfo;
+    //   values.keys.forEach((element) async {
+    //     if (element == user.userId) {
+    //       DataSnapshot userInfoJson = await monexDbRef.child("users").child(element).once();
+    //       userInfo = userInfoJson.value;
+    //     }
+    //   });
+    //   if (userInfo != null) {
+    //     if(userInfo!["isSetUp"]){
+
+    //     }
+    //   }
+    // }
+
+    DatabaseReference monexDbRef = FirebaseDatabase.instance.reference();
+    if (user.signInType.contains(LocalComponent.SignInType.Common)) {
+      monexDbRef.child("users").update({
+        user.userId: {
+          "email": user.email,
+          "signInType": user.signInType,
+        }
+      });
+    }
+    monexDbRef.child("users").update({
+      user.userId: {"email": user.email, "signInType": user.signInType, "first_name" : }
+    });
   }
 }

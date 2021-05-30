@@ -129,6 +129,13 @@ class _SignUpViewState extends State<SignUpView> {
     navigateToCreateUser(LocalComponent.User(user!.user!.uid, [LocalComponent.SignInType.Facebook]));
   }
 
+  void googleLogin() async {
+    UserCredential? user = await context.read<SignUpCubit>().startGoogleLogin().catchError((error) {
+      displayErrorMessage(error);
+    });
+    navigateToCreateUser(LocalComponent.User(user!.user!.uid, [LocalComponent.SignInType.Google]));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -350,12 +357,7 @@ class _SignUpViewState extends State<SignUpView> {
                                 alignment: Alignment.center,
                               ),
                             ),
-                            onPressed: () async {
-                              UserCredential? userMain = await context.read<SignUpCubit>().startGoogleLogin();
-                              if (userMain != null) {
-                                // TODO navigate to main screen
-                              }
-                            },
+                            onPressed: googleLogin,
                           ),
                           IconButton(
                             iconSize: 50,
