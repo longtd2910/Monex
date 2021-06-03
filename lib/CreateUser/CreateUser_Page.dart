@@ -10,7 +10,10 @@ class CreateUserPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => cubit,
-      child: CreateUserView(),
+      child: CreateUserView(
+        MediaQuery.of(context).size.height,
+        MediaQuery.of(context).size.width,
+      ),
     );
   }
 }

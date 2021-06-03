@@ -21,5 +21,9 @@
     "emailRegistered" : "This email has already belong to an account",
     "unknownError" : "Unexpected error happened on the way",
     "internetException" : "We can not connect to our server, check your internet connection and try again",
-    "serverMaintenance" : "Our server is going undercover for upgrade, please use Offline Mode or wait a moment"
+    "serverMaintenance" : "Our server is going undercover for upgrade, please use Offline Mode or wait a moment",
+
+    "createUserGreeting" : "Let us get to know you more",
+    "firstName" : "First name",
+    "lastName" : "Last name"
 }

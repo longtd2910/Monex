@@ -75,7 +75,8 @@ class SignUpCubit extends Cubit<SignUpModel> {
     final AccessToken? accessToken = await FacebookAuth.instance.accessToken;
     if (accessToken != null) {
       var user = await FirebaseAuth.instance.signInWithCredential(FacebookAuthProvider.credential(accessToken.token));
-      return [user, await FacebookAuth.instance.getUserData()];
+      var data = await FacebookAuth.instance.getUserData();
+      return [user, data];
     }
     try {
       final LoginResult result = await FacebookAuth.instance.login();
@@ -83,7 +84,8 @@ class SignUpCubit extends Cubit<SignUpModel> {
         // you are logged
         final AccessToken accessToken = result.accessToken!;
         var user = await FirebaseAuth.instance.signInWithCredential(FacebookAuthProvider.credential(accessToken.token));
-        return [user, await FacebookAuth.instance.getUserData()];
+        var data = await FacebookAuth.instance.getUserData();
+        return [user, data];
       }
       if (result.status == LoginStatus.cancelled) {
         return null;
@@ -93,7 +95,7 @@ class SignUpCubit extends Cubit<SignUpModel> {
     }
   }
 
-  Future<UserCredential?> startGoogleLogin() async {
+  Future<List?> startGoogleLogin() async {
     try {
       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -101,7 +103,8 @@ class SignUpCubit extends Cubit<SignUpModel> {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      var user = await FirebaseAuth.instance.signInWithCredential(credential);
+      return [user, googleUser.displayName, googleUser.email, googleUser.photoUrl];
     } on Exception {
       throw ServerSideSignUpException(ServerSignUpError.UnknownError);
     }
@@ -135,52 +138,28 @@ class SignUpCubit extends Cubit<SignUpModel> {
     if (!state.acceptRadio!) {
       throw ClientSideSignUpException(ClientSignUpError.TermsOfServicesUnCheck);
     }
-    try {
-      final UserCredential emailUser = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: state.email!,
-        password: state.password!,
-      );
-      return emailUser;
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
+    UserCredential emailUser = await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: state.email!,
+      password: state.password!,
+    )
+        .catchError((error) {
+      if ((error as FirebaseAuthException).code == 'email-already-in-use') {
         throw ServerSideSignUpException(ServerSignUpError.EmailRegistered);
-      } else
-        throw ServerSideSignUpException(ServerSignUpError.UnknownError);
-    } catch (e) {
-      throw ServerSideSignUpException(ServerSignUpError.UnknownError);
-    }
+      }
+      print(error);
+    });
+    return emailUser;
   }
 
-  Future<ActionStatus> addUserToDatabase(LocalComponent.User user) async {
-    //TODO: migrate this part to login
-    //   DatabaseReference monexDbRef = FirebaseDatabase.instance.reference();
-    //   DataSnapshot userIdList = await monexDbRef.child("users").once();
-    //   Map<dynamic, dynamic> values = userIdList.value;
-    //   Map<dynamic, dynamic>? userInfo;
-    //   values.keys.forEach((element) async {
-    //     if (element == user.userId) {
-    //       DataSnapshot userInfoJson = await monexDbRef.child("users").child(element).once();
-    //       userInfo = userInfoJson.value;
-    //     }
-    //   });
-    //   if (userInfo != null) {
-    //     if(userInfo!["isSetUp"]){
-
-    //     }
-    //   }
-    // }
-
-    DatabaseReference monexDbRef = FirebaseDatabase.instance.reference();
-    if (user.signInType.contains(LocalComponent.SignInType.Common)) {
+  Future<void> addUserToDatabase(LocalComponent.User user) async {
+    try {
+      DatabaseReference monexDbRef = FirebaseDatabase.instance.reference();
       monexDbRef.child("users").update({
-        user.userId: {
-          "email": user.email,
-          "signInType": user.signInType,
-        }
+        user.userId: {"isSetUp": true}
       });
+    } on Exception catch (e) {
+      throw ServerSideSignUpException(ServerSignUpError.UnknownError);
     }
-    monexDbRef.child("users").update({
-      user.userId: {"email": user.email, "signInType": user.signInType, "first_name" : }
-    });
   }
 }

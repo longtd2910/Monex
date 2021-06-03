@@ -16,3 +16,20 @@ class Crypter {
     return decrypted;
   }
 }
+
+class TypeConvert {
+  static List<String> nameConvert(String? value) {
+    if (!value!.contains(" ")) {
+      return [value, ""];
+    }
+    String lastName = "";
+    List<String> separateSpace = value.split(" ");
+    for (int i = 1; i < separateSpace.length; ++i) {
+      lastName += separateSpace[i];
+      if (i != separateSpace.length - 1) {
+        lastName += " ";
+      }
+    }
+    return [separateSpace[0], lastName];
+  }
+}

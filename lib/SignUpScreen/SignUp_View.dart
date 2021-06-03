@@ -7,6 +7,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monex/Components/ErrorCode.dart';
 import 'package:monex/Components/User.dart' as LocalComponent;
+import 'package:monex/CreateUser/CreateUser_Cubit.dart';
+import 'package:monex/CreateUser/CreateUser_Page.dart';
+import 'package:monex/utils/function.dart';
+import 'package:page_transition/page_transition.dart';
 
 import 'SignUp_Cubit.dart';
 
@@ -111,29 +115,59 @@ class _SignUpViewState extends State<SignUpView> {
     );
   }
 
-  void navigateToCreateUser(LocalComponent.User user) {}
+  void navigateToCreateUser(LocalComponent.User user) async {
+    await context.read<SignUpCubit>().addUserToDatabase(user).catchError((error) {
+      displayErrorMessage(error);
+    });
+    print(user);
+    CreateUserCubit cubit = CreateUserCubit(new CreateUserModel(user));
+    final CreateUserPage page = new CreateUserPage(cubit);
+    Navigator.pushReplacement(context, PageTransition(child: page, type: PageTransitionType.rightToLeft));
+  }
 
   void formSubmitted() async {
-    UserCredential? user = await context
+    UserCredential? received = await context
         .read<SignUpCubit>()
         .startEmailSignUp(emailInputController.text, passwordInputController.text, rePasswordInputController.text)
         .catchError((error) {
       displayErrorMessage(error);
     });
+
+    LocalComponent.User user = LocalComponent.User(received.user!.uid, [LocalComponent.SignInType.Common]);
+    user.email = received.user!.email;
+    navigateToCreateUser(user);
   }
 
   void facebookLogin() async {
-    UserCredential? user = await context.read<SignUpCubit>().startFacebookLogin().catchError((error) {
+    List? received = await context.read<SignUpCubit>().startFacebookLogin().catchError((error) {
       displayErrorMessage(error);
     });
-    navigateToCreateUser(LocalComponent.User(user!.user!.uid, [LocalComponent.SignInType.Facebook]));
+    UserCredential serverCred = received![0];
+    print(serverCred.user!.uid);
+    Map<String, dynamic> userInfo = received[1];
+    LocalComponent.User user = LocalComponent.User(serverCred.user!.uid, [LocalComponent.SignInType.Facebook]);
+    user.email = userInfo["email"];
+    List<String> nameConvert = TypeConvert.nameConvert(userInfo["name"]);
+    user.firstName = nameConvert[0];
+    user.lastName = nameConvert[1];
+    if (userInfo["picture"]["data"]["is_silhouette"] != 0) {
+      user.avatarLink = userInfo["picture"]["data"]["url"];
+    }
+
+    navigateToCreateUser(user);
   }
 
   void googleLogin() async {
-    UserCredential? user = await context.read<SignUpCubit>().startGoogleLogin().catchError((error) {
+    List? received = await context.read<SignUpCubit>().startGoogleLogin().catchError((error) {
       displayErrorMessage(error);
     });
-    navigateToCreateUser(LocalComponent.User(user!.user!.uid, [LocalComponent.SignInType.Google]));
+    UserCredential serverCred = received![0];
+    LocalComponent.User user = LocalComponent.User(serverCred.user!.uid, [LocalComponent.SignInType.Google]);
+    user.lastName = serverCred.additionalUserInfo!.profile!["family_name"];
+    user.firstName = serverCred.additionalUserInfo!.profile!["given_name"];
+    user.email = received[2];
+    user.avatarLink = received[3];
+    navigateToCreateUser(user);
   }
 
   @override
