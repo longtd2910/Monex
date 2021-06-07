@@ -7,6 +7,7 @@ class CreateUserModel {
   User user;
   String firstName = "";
   String lastName = "";
+  Gender gender = Gender.Male;
   CreateUserModel(this.user);
 }
 
@@ -24,5 +25,12 @@ class CreateUserCubit extends Cubit<CreateUserModel> {
   Future<bool> saveAvatarToLocal() async {
     await state.user.updateAvatarFromServer().catchError((_) => false);
     return true;
+  }
+
+  Gender radioButtonSelectionChanged(Gender? value) {
+    state.gender = value!;
+    state.user.gender = value;
+    emit(state);
+    return state.gender;
   }
 }

@@ -25,5 +25,11 @@
 
     "createUserGreeting" : "Let us get to know you more",
     "firstName" : "First name",
-    "lastName" : "Last name"
+    "lastName" : "Last name",
+    "getStarted" : "Get Started",
+    "genderMale" : "Male",
+    "genderFemale":"Female",
+    "genderOther" : "Other",
+    "chooseImageCamera" : "Camera",
+    "chooseImageGallery" : "Gallery"
 }

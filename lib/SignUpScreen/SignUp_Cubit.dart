@@ -147,7 +147,7 @@ class SignUpCubit extends Cubit<SignUpModel> {
       if ((error as FirebaseAuthException).code == 'email-already-in-use') {
         throw ServerSideSignUpException(ServerSignUpError.EmailRegistered);
       }
-      print(error);
+      throw ServerSideSignUpException(ServerSignUpError.UnknownError);
     });
     return emailUser;
   }

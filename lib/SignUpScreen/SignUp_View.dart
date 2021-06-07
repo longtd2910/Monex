@@ -135,6 +135,8 @@ class _SignUpViewState extends State<SignUpView> {
 
     LocalComponent.User user = LocalComponent.User(received.user!.uid, [LocalComponent.SignInType.Common]);
     user.email = received.user!.email;
+    user.firstName = "";
+    user.lastName = "";
     navigateToCreateUser(user);
   }
 
@@ -179,265 +181,268 @@ class _SignUpViewState extends State<SignUpView> {
           FocusScope.of(context).unfocus();
         },
         child: SafeArea(
-          child: BlocBuilder<SignUpCubit, SignUpModel>(
-            builder: (context, state) {
-              return Container(
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    // * App Logo
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 40,
+          child: Container(
+            color: Colors.white,
+            child: BlocBuilder<SignUpCubit, SignUpModel>(
+              builder: (context, state) {
+                return Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      // * App Logo
+                      Container(
+                        margin: EdgeInsets.only(
+                          top: 40,
+                        ),
+                        height: screenHeight * 16 / 100,
+                        child: SvgPicture.asset(
+                          'assets/drawable/Main/AppLogo-Blue.svg',
+                          height: (screenHeight * 15 / 100),
+                        ),
                       ),
-                      height: screenHeight * 16 / 100,
-                      child: SvgPicture.asset(
-                        'assets/drawable/Main/AppLogo-Blue.svg',
-                        height: (screenHeight * 15 / 100),
+                      // * Email Input
+                      Container(
+                        decoration: inputContainerDecor,
+                        margin: inputContainerMargin,
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(
+                          right: 16,
+                          left: 16,
+                        ),
+                        height: screenHeight * 5 / 100,
+                        width: screenWidth * 75 / 100,
+                        child: Center(
+                          child: TextField(
+                            controller: emailInputController,
+                            decoration: InputDecoration.collapsed(
+                              hintText: AppLocalizations.of(context)!.emailHolder,
+                            ),
+                            style: inputStyle,
+                          ),
+                        ),
                       ),
-                    ),
-                    // * Email Input
-                    Container(
-                      decoration: inputContainerDecor,
-                      margin: inputContainerMargin,
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(
-                        right: 16,
-                        left: 16,
-                      ),
-                      height: screenHeight * 5 / 100,
-                      width: screenWidth * 75 / 100,
-                      child: Center(
+                      // * Password Input
+                      Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(
+                          right: 16,
+                          left: 16,
+                        ),
+                        height: screenHeight * 5 / 100,
+                        decoration: inputContainerDecor,
+                        margin: inputContainerMargin,
+                        width: screenWidth * 75 / 100,
                         child: TextField(
-                          controller: emailInputController,
-                          decoration: InputDecoration.collapsed(
-                            hintText: AppLocalizations.of(context)!.emailHolder,
+                          controller: passwordInputController,
+                          obscureText: !state.passwordEyeOpen!,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: AppLocalizations.of(context)!.passwordHolder,
+                            suffixIcon: Visibility(
+                              visible: _passwordEyeVisibility,
+                              child: IconButton(
+                                icon: Icon(
+                                  (state.passwordEyeOpen!) ? Icons.visibility : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    context.read<SignUpCubit>().passwordEyeChanged();
+                                  });
+                                },
+                              ),
+                            ),
                           ),
                           style: inputStyle,
                         ),
                       ),
-                    ),
-                    // * Password Input
-                    Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(
-                        right: 16,
-                        left: 16,
-                      ),
-                      height: screenHeight * 5 / 100,
-                      decoration: inputContainerDecor,
-                      margin: inputContainerMargin,
-                      width: screenWidth * 75 / 100,
-                      child: TextField(
-                        controller: passwordInputController,
-                        obscureText: !state.passwordEyeOpen!,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: AppLocalizations.of(context)!.passwordHolder,
-                          suffixIcon: Visibility(
-                            visible: _passwordEyeVisibility,
-                            child: IconButton(
-                              icon: Icon(
-                                (state.passwordEyeOpen!) ? Icons.visibility : Icons.visibility_off,
+                      // * Re-enter password Input
+                      Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(
+                          right: 16,
+                          left: 16,
+                        ),
+                        height: screenHeight * 5 / 100,
+                        decoration: inputContainerDecor,
+                        margin: inputContainerMargin,
+                        width: screenWidth * 75 / 100,
+                        child: TextField(
+                          controller: rePasswordInputController,
+                          obscureText: !state.rePasswordEyeOpen!,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: AppLocalizations.of(context)!.rePassewordHolder,
+                            suffixIcon: Visibility(
+                              visible: _rePasswordVisibility,
+                              child: IconButton(
+                                icon: Icon(
+                                  (state.passwordEyeOpen!) ? Icons.visibility : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    context.read<SignUpCubit>().rePasswordEyeChanged();
+                                  });
+                                },
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  context.read<SignUpCubit>().passwordEyeChanged();
-                                });
+                            ),
+                          ),
+                          style: inputStyle,
+                        ),
+                      ),
+                      // * Terms of Services Box
+                      Container(
+                        height: screenHeight * 10 / 100,
+                        width: screenWidth * 80 / 100,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              value: state.acceptRadio,
+                              onChanged: (value) {
+                                context.read<SignUpCubit>().radioButtonChanged();
+                                setState(() {});
                               },
                             ),
-                          ),
-                        ),
-                        style: inputStyle,
-                      ),
-                    ),
-                    // * Re-enter password Input
-                    Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.only(
-                        right: 16,
-                        left: 16,
-                      ),
-                      height: screenHeight * 5 / 100,
-                      decoration: inputContainerDecor,
-                      margin: inputContainerMargin,
-                      width: screenWidth * 75 / 100,
-                      child: TextField(
-                        controller: rePasswordInputController,
-                        obscureText: !state.rePasswordEyeOpen!,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: AppLocalizations.of(context)!.rePassewordHolder,
-                          suffixIcon: Visibility(
-                            visible: _rePasswordVisibility,
-                            child: IconButton(
-                              icon: Icon(
-                                (state.passwordEyeOpen!) ? Icons.visibility : Icons.visibility_off,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  context.read<SignUpCubit>().rePasswordEyeChanged();
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        style: inputStyle,
-                      ),
-                    ),
-                    // * Terms of Services Box
-                    Container(
-                      height: screenHeight * 10 / 100,
-                      width: screenWidth * 80 / 100,
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            value: state.acceptRadio,
-                            onChanged: (value) {
-                              context.read<SignUpCubit>().radioButtonChanged();
-                              setState(() {});
-                            },
-                          ),
-                          Text(
-                            (AppLocalizations.of(context)!.agree + " "),
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontFamily: "Montserrat",
-                              color: Colors.black,
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              print("term and licences");
-                            },
-                            child: Text(
-                              AppLocalizations.of(context)!.termAndLicenses,
+                            Text(
+                              (AppLocalizations.of(context)!.agree + " "),
                               style: TextStyle(
                                 fontSize: 12,
                                 fontFamily: "Montserrat",
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
+                                color: Colors.black,
                               ),
                             ),
-                          ),
-                        ],
+                            InkWell(
+                              onTap: () {
+                                print("term and licences");
+                              },
+                              child: Text(
+                                AppLocalizations.of(context)!.termAndLicenses,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: "Montserrat",
+                                  fontWeight: FontWeight.w500,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
 
-                    // * Submit Button
-                    Container(
-                      height: screenHeight * 5 / 100,
-                      width: screenWidth * 40 / 100,
-                      child: ElevatedButton(
-                        child: Text(
-                          AppLocalizations.of(context)!.signUp,
-                        ),
-                        onPressed: formSubmitted,
-                        style: ButtonStyle(
-                          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          )),
-                          backgroundColor: MaterialStateProperty.all(
-                            Color(0xff00AEEF),
-                          ),
-                          textStyle: MaterialStateProperty.all(
-                            TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Montserrat',
-                              fontSize: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    // * "OR" Field
-                    Expanded(
-                      child: Container(
-                        child: Center(
+                      // * Submit Button
+                      Container(
+                        height: screenHeight * 5 / 100,
+                        width: screenWidth * 40 / 100,
+                        child: ElevatedButton(
                           child: Text(
-                            AppLocalizations.of(context)!.or.toUpperCase(),
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                              fontSize: 24,
+                            AppLocalizations.of(context)!.signUp,
+                          ),
+                          onPressed: formSubmitted,
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            )),
+                            backgroundColor: MaterialStateProperty.all(
+                              Color(0xff00AEEF),
+                            ),
+                            textStyle: MaterialStateProperty.all(
+                              TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Montserrat',
+                                fontSize: 24,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    // * "Third-Party Sign Up Options"
-                    Container(
-                      height: screenHeight * 10 / 100,
-                      margin: EdgeInsets.only(bottom: 40),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            iconSize: 50,
-                            icon: Container(
-                              padding: EdgeInsets.all(10),
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border.all(
-                                  width: 0.5,
-                                  color: Colors.black.withOpacity(0.2),
-                                ),
-                              ),
-                              child: SvgPicture.asset(
-                                'assets/drawable/ThirdParty/google.svg',
-                                height: 27,
-                                alignment: Alignment.center,
+                      // * "OR" Field
+                      Expanded(
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.or.toUpperCase(),
+                              style: TextStyle(
+                                color: Colors.black.withOpacity(0.5),
+                                fontSize: 24,
                               ),
                             ),
-                            onPressed: googleLogin,
                           ),
-                          IconButton(
-                            iconSize: 50,
-                            icon: Container(
-                              padding: EdgeInsets.all(10),
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border.all(
-                                  width: 0.5,
-                                  color: Colors.black.withOpacity(0.2),
-                                ),
-                              ),
-                              child: SvgPicture.asset(
-                                'assets/drawable/ThirdParty/facebook.svg',
-                                height: 27,
-                                alignment: Alignment.center,
-                              ),
-                            ),
-                            onPressed: () {
-                              facebookLogin();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    // * Sign in Hypertext
-                    Container(
-                      margin: EdgeInsets.only(
-                        bottom: 16,
-                      ),
-                      child: InkWell(
-                        child: Text(
-                          AppLocalizations.of(context)!.alreadyHaveAccount,
-                          style: TextStyle(fontFamily: 'Montserrat', fontSize: 14, decoration: TextDecoration.underline),
                         ),
-                        onTap: () {
-                          print("Login Redirect");
-                        },
                       ),
-                    )
-                  ],
-                ),
-              );
-            },
+                      // * "Third-Party Sign Up Options"
+                      Container(
+                        height: screenHeight * 10 / 100,
+                        margin: EdgeInsets.only(bottom: 40),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              iconSize: 50,
+                              icon: Container(
+                                padding: EdgeInsets.all(10),
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(
+                                    width: 0.5,
+                                    color: Colors.black.withOpacity(0.2),
+                                  ),
+                                ),
+                                child: SvgPicture.asset(
+                                  'assets/drawable/ThirdParty/google.svg',
+                                  height: 27,
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                              onPressed: googleLogin,
+                            ),
+                            IconButton(
+                              iconSize: 50,
+                              icon: Container(
+                                padding: EdgeInsets.all(10),
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  border: Border.all(
+                                    width: 0.5,
+                                    color: Colors.black.withOpacity(0.2),
+                                  ),
+                                ),
+                                child: SvgPicture.asset(
+                                  'assets/drawable/ThirdParty/facebook.svg',
+                                  height: 27,
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                              onPressed: () {
+                                facebookLogin();
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      // * Sign in Hypertext
+                      Container(
+                        margin: EdgeInsets.only(
+                          bottom: 16,
+                        ),
+                        child: InkWell(
+                          child: Text(
+                            AppLocalizations.of(context)!.alreadyHaveAccount,
+                            style: TextStyle(fontFamily: 'Montserrat', fontSize: 14, decoration: TextDecoration.underline),
+                          ),
+                          onTap: () {
+                            print("Login Redirect");
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),
